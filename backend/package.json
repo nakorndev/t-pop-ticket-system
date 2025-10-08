@@ -18,9 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma": "dotenv -e .env.development -- npx prisma",
-    "prisma:generate": "npm run prisma -- generate --no-engine",
-    "prisma:push": "npm run prisma -- db push"
+    "prisma:generate": "prisma generate --no-engine",
+    "prisma:push": "prisma db push"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
