@@ -22,7 +22,8 @@ enum Status {
 
 model Ticket {
   id String @id @default(cuid())
-  description String?
+  title String
+  description String
   priority Priority @default(LOW)
   status Status @default(OPEN)
   createdAt DateTime @default(now())
