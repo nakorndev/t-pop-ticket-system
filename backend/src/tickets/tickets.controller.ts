@@ -13,26 +13,7 @@ import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { QueryTicketDto } from './dto/query-ticket.dto';
-import { ApiResponse } from '@nestjs/swagger';
-
-const apiResponseTicketData = {
-  id: { type: 'string', example: 'cuid' },
-  title: { type: 'string', example: 'My first ticket' },
-  description: {
-    type: 'string',
-    example: 'This is my first ticket',
-  },
-  priority: { type: 'string', example: 'LOW' },
-  status: { type: 'string', example: 'OPEN' },
-  createdAt: {
-    type: 'string',
-    example: '2023-01-01T00:00:00.000Z',
-  },
-  updatedAt: {
-    type: 'string',
-    example: '2023-01-01T00:00:00.000Z',
-  },
-};
+import { ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 @Controller('tickets')
 export class TicketsController {
@@ -54,8 +35,7 @@ export class TicketsController {
           example: 'The record has been successfully created.',
         },
         data: {
-          type: 'object',
-          properties: apiResponseTicketData,
+          $ref: getSchemaPath(CreateTicketDto),
         },
       },
     },
@@ -99,8 +79,7 @@ export class TicketsController {
         data: {
           type: 'array',
           items: {
-            type: 'object',
-            properties: apiResponseTicketData,
+            $ref: getSchemaPath(CreateTicketDto),
           },
         },
         total: { type: 'number', example: 1 },
@@ -131,8 +110,7 @@ export class TicketsController {
         statusCode: { type: 'number', example: 200 },
         message: { type: 'string', example: 'Ticket found' },
         data: {
-          type: 'object',
-          properties: apiResponseTicketData,
+          $ref: getSchemaPath(CreateTicketDto),
         },
       },
     },
@@ -183,8 +161,7 @@ export class TicketsController {
           example: 'The record has been successfully updated.',
         },
         data: {
-          type: 'object',
-          properties: apiResponseTicketData,
+          $ref: getSchemaPath(CreateTicketDto),
         },
       },
     },
