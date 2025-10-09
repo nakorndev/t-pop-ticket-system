@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TicketsModule } from './tickets/tickets.module';
 import { BullModule } from '@nestjs/bullmq';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BullModule } from '@nestjs/bullmq';
       },
     }),
     TicketsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

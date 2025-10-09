@@ -11,13 +11,13 @@ import { Queue } from 'bullmq';
 export class TicketsService {
   constructor(
     private prisma: PrismaService,
-    @InjectQueue('tickets') private readonly ticketQueue: Queue,
+    @InjectQueue('tickets') private readonly ticketsQueue: Queue,
   ) {}
 
   async enqueueTicket(ticketId: string) {
     console.log(`Enqueueing ticket ${ticketId}...`);
     await Promise.all([
-      this.ticketQueue.add(
+      this.ticketsQueue.add(
         'ticket-notify',
         { ticketId },
         {
@@ -26,7 +26,7 @@ export class TicketsService {
           backoff: { type: 'exponential', delay: 3000 },
         },
       ),
-      this.ticketQueue.add(
+      this.ticketsQueue.add(
         'ticket-sla',
         { ticketId },
         {
@@ -40,7 +40,7 @@ export class TicketsService {
 
   async removeSlaQueue(ticketId: string) {
     console.log(`Removing SLA ${ticketId} queue...`);
-    await this.ticketQueue.removeJobScheduler(`sla_${ticketId}`);
+    await this.ticketsQueue.removeJobScheduler(`sla_${ticketId}`);
     console.log(`Removed SLA ${ticketId} queue`);
   }
 
