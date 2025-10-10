@@ -24,7 +24,7 @@ export default function TicketForm({
   action,
   defaultValues
 }: {
-  method: 'GET' | 'POST',
+  method: 'PATCH' | 'POST',
   action: string,
   defaultValues?: FormSchema
 }) {
@@ -53,7 +53,11 @@ export default function TicketForm({
     } else {
       alert('Done!')
       const json = await res.json()
-      router.push(`/tickets/${json.id}`)
+      if (method === 'PATCH') {
+        router.push(`/tickets/${json.data.id}`)
+      } else if (method === 'POST') {
+        router.push(`/tickets/${json.id}`)
+      }
     }
     setLoading(false)
   }
