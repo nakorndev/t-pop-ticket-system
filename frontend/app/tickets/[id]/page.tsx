@@ -1,4 +1,7 @@
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { notFound } from "next/navigation"
+import DeleteButton from "./delete-button"
 
 export default async function Page({
   params
@@ -31,6 +34,12 @@ export default async function Page({
         <li>Created At: {data.createdAt}</li>
         <li>Updated At: {data.updatedAt}</li>
       </ul>
+      <div className="mt-4 flex gap-2">
+        <Button>
+          <Link href={`/tickets/${id}/edit`}>Edit</Link>
+        </Button>
+        <DeleteButton id={id}></DeleteButton>
+      </div>
     </div>
   )
 }
