@@ -19,10 +19,11 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { cn } from "@/lib/utils"
 import { FormEventHandler } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { Input } from "@/components/ui/input"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -78,20 +79,43 @@ export function DataTable<TData, TValue>({
 
   const router = useRouter()
 
-  const handleSearch: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault()
+  const getUrl = (newPage?: number) => {
     const values = form.getValues()
     const url = new URL('/tickets', window.location.href)
-    url.searchParams.set('page', page.toString())
+    url.searchParams.set('page', (newPage ?? page).toString())
     url.searchParams.set('sortBy', values.sortBy)
     url.searchParams.set('sortOrder', values.sortOrder)
+    if (values.search.title) {
+      url.searchParams.set('title', values.search.title)
+    }
+    if (values.search.description) {
+      url.searchParams.set('description', values.search.description)
+    }
+    if (values.search.priority) {
+      url.searchParams.set('priority', values.search.priority)
+    }
+    if (values.search.status) {
+      url.searchParams.set('status', values.search.status)
+    }
+    return url
+  }
+
+  const handleSearch: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+    const url = getUrl(1)
     router.push(url.toString())
   }
 
   const form = useForm({
     defaultValues: {
       sortBy,
-      sortOrder
+      sortOrder,
+      search: {
+        title: search?.title || '',
+        description: search?.description || '',
+        priority: search?.priority || '',
+        status: search?.status || '',
+      }
     },
   })
 
@@ -132,6 +156,14 @@ export function DataTable<TData, TValue>({
                       <SelectItem value="desc">Descending</SelectItem>
                     </SelectContent>
                   </Select>
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="search.title" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input {...field}></Input>
+                  </FormControl>
                 </FormItem>
               )} />
             </div>
@@ -189,14 +221,14 @@ export function DataTable<TData, TValue>({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href={`/tickets?page=${page === 1 ? 1 : page - 1}`} />
+              <PaginationPrevious href={getUrl(page - 1).toString()} />
             </PaginationItem>
 
             {pagesToShow().map((p, i) =>
               typeof p === "number" ? (
                 <PaginationItem key={i}>
                   <PaginationLink
-                    href={`/tickets?page=${p}`}
+                    href={getUrl(p).toString()}
                     className={cn(p === page && "bg-primary text-white")}
                   >
                     {p}
@@ -210,7 +242,7 @@ export function DataTable<TData, TValue>({
             )}
 
             <PaginationItem>
-              <PaginationNext href={`/tickets?page=${page + 1}`} />
+              <PaginationNext href={getUrl(page + 1).toString()} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

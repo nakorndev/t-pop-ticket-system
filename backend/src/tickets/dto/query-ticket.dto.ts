@@ -5,24 +5,34 @@ import {
   IsOptional,
   IsString,
   Max,
+  MaxLength,
   Min,
-  ValidateNested,
 } from 'class-validator';
-import { SearchTicketDto } from './search-ticket.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Priority, Status } from 'src/generated/prisma';
 
 export class QueryTicketDto {
-  @ApiPropertyOptional({
-    type: SearchTicketDto,
-    example: {
-      title: 'My first ticket',
-      description: 'This is my first ticket',
-    },
-  })
+  @ApiPropertyOptional({ example: 'My first ticket' })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => SearchTicketDto)
-  search?: SearchTicketDto;
+  @IsString()
+  @MaxLength(255)
+  title?: string;
+
+  @ApiPropertyOptional({ example: 'This is my first ticket' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(5000)
+  description?: string;
+
+  @ApiPropertyOptional({ example: 'LOW' })
+  @IsOptional()
+  @IsEnum(Priority)
+  priority?: Priority;
+
+  @ApiPropertyOptional({ example: 'OPEN' })
+  @IsOptional()
+  @IsEnum(Status)
+  status?: Status;
 
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()

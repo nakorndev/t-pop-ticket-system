@@ -51,25 +51,34 @@ export class TicketsService {
   }
 
   async findAll(queryTicketDto: QueryTicketDto) {
-    const { search, page, pageSize, sortBy, sortOrder } = queryTicketDto;
+    const {
+      title,
+      description,
+      priority,
+      status,
+      page,
+      pageSize,
+      sortBy,
+      sortOrder,
+    } = queryTicketDto;
     const where: Prisma.TicketWhereInput = {};
-    if (search?.title) {
+    if (title) {
       where.title = {
-        contains: search.title,
+        contains: title,
         mode: 'insensitive',
       };
     }
-    if (search?.description) {
+    if (description) {
       where.description = {
-        contains: search.description,
+        contains: description,
         mode: 'insensitive',
       };
     }
-    if (search?.priority) {
-      where.priority = search.priority;
+    if (priority) {
+      where.priority = priority;
     }
-    if (search?.status) {
-      where.status = search.status;
+    if (status) {
+      where.status = status;
     }
     const [tickets, total] = await Promise.all([
       this.prisma.ticket.findMany({
