@@ -1,6 +1,7 @@
 'use client'
 
 import { ColumnDef } from "@tanstack/react-table"
+import Link from "next/link"
 
 export type Ticket = {
   id: string
@@ -49,4 +50,11 @@ export const columns: ColumnDef<Ticket>[] = [
     accessorKey: 'updatedAt',
     header: 'Updated At',
   },
+  {
+    accessorKey: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => (
+      <Link href={`/tickets/${row.getValue('id')}`}>View</Link>
+    )
+  }
 ]

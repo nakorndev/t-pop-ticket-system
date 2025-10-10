@@ -24,7 +24,6 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -82,7 +81,7 @@ export function DataTable<TData, TValue>({
 
   const getUrl = (newPage?: number) => {
     const values = form.getValues()
-    const url = new URL('/tickets', window.location.href)
+    const url = new URL('/tickets', 'http://localhost:3000')
     url.searchParams.set('page', (newPage ?? page).toString())
     url.searchParams.set('sortBy', values.sortBy)
     url.searchParams.set('sortOrder', values.sortOrder)
