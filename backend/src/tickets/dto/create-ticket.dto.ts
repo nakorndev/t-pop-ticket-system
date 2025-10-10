@@ -22,12 +22,11 @@ export class CreateTicketDto {
 
   @ApiProperty({
     description: 'Ticket description',
-    required: true,
+    required: false,
     maximum: 5000,
     example: 'This is my first ticket',
   })
   @IsString({ message: 'Description must be a string' })
-  @IsNotEmpty({ message: 'Description is required' })
   @MaxLength(5000, { message: 'Description must be at most 5000 characters' })
   description: string;
 
