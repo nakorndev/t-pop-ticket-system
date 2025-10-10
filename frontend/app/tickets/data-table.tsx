@@ -16,9 +16,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
-import { useState } from "react"
 import { cn } from "@/lib/utils"
-import Link from "next/link"
+import { FormEventHandler } from "react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { useForm } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -26,6 +30,14 @@ interface DataTableProps<TData, TValue> {
   total: number
   page: number
   pageSize: number
+  sortBy: string
+  sortOrder: string
+  search?: {
+    title?: string
+    description?: string
+    priority?: string
+    status?: string
+  }
 }
 
 export function DataTable<TData, TValue>({
@@ -34,6 +46,9 @@ export function DataTable<TData, TValue>({
   total,
   page,
   pageSize,
+  sortBy,
+  sortOrder,
+  search,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -61,8 +76,71 @@ export function DataTable<TData, TValue>({
     return pages
   }
 
+  const router = useRouter()
+
+  const handleSearch: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+    const values = form.getValues()
+    const url = new URL('/tickets', window.location.href)
+    url.searchParams.set('page', page.toString())
+    url.searchParams.set('sortBy', values.sortBy)
+    url.searchParams.set('sortOrder', values.sortOrder)
+    router.push(url.toString())
+  }
+
+  const form = useForm({
+    defaultValues: {
+      sortBy,
+      sortOrder
+    },
+  })
+
   return (
     <div>
+      <div className="mb-2 p-2 bg-gray-200 rounded-lg">
+        <Form {...form}>
+          <form onSubmit={handleSearch}>
+            <div className="grid grid-cols-4 gap-2">
+              <FormField control={form.control} name="sortBy" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sort by</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="id">ID</SelectItem>
+                      <SelectItem value="title">Title</SelectItem>
+                      <SelectItem value="description">Description</SelectItem>
+                      <SelectItem value="priority">Priority</SelectItem>
+                      <SelectItem value="status">Status</SelectItem>
+                      <SelectItem value="createdAt">Created At</SelectItem>
+                      <SelectItem value="updatedAt">Updated At</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="sortOrder" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sort order</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="asc">Ascending</SelectItem>
+                      <SelectItem value="desc">Descending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )} />
+            </div>
+            <div className="mt-4">
+              <Button type="submit">Submit</Button>
+            </div>
+          </form>
+        </Form>
+      </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -132,7 +210,7 @@ export function DataTable<TData, TValue>({
             )}
 
             <PaginationItem>
-              <PaginationNext href={`/tickets?page=${page === 1 ? 1 : page + 1}`} />
+              <PaginationNext href={`/tickets?page=${page + 1}`} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

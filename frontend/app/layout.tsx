@@ -32,7 +32,7 @@ export default function RootLayout({
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <div className="cursor-pointer hover:bg-gray-300 rounded-md px-2 py-1">
-                    Open
+                    Tickets
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
